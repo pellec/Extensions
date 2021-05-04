@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Extensions;
 using Newtonsoft.Json.Linq;
 using Shouldly;
@@ -124,6 +125,16 @@ namespace Tests
 				.AddAndReturn(1)
 				.Count()
 				.ShouldBe(1);
+		}
+
+		[Fact]
+		public void Zip()
+		{
+			"Hello World"
+				.Zip()
+				.Unzip()
+				.Map(x => Encoding.UTF8.GetString(x))
+				.ShouldBe("Hello World");
 		}
 
 		public class Type

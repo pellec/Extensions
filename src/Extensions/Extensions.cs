@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
@@ -164,6 +165,35 @@ namespace Extensions
 		public static IEnumerable<T> AddAndReturn<T>(this IEnumerable<T> collection, T newValue)
 		{
 			return new List<T>(collection) { newValue };
+		}
+
+		public static byte[] Zip(this string input)
+		{
+			return Zip(Encoding.UTF8.GetBytes(input));
+		}
+
+		public static byte[] Zip(this byte[] input)
+		{
+			using var msi = new MemoryStream(input);
+			using var mso = new MemoryStream();
+			using (var gs = new GZipStream(mso, CompressionMode.Compress))
+			{
+				msi.CopyTo(gs);
+			}
+
+			return mso.ToArray();
+		}
+
+		public static byte[] Unzip(this byte[] input)
+		{
+			using var msi = new MemoryStream(input);
+			using var mso = new MemoryStream();
+			using (var gs = new GZipStream(msi, CompressionMode.Decompress))
+			{
+				gs.CopyTo(mso);
+			}
+
+			return mso.ToArray();
 		}
 
 		public class Utf8StringWriter : StringWriter
